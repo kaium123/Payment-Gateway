@@ -1,5 +1,5 @@
 const redis = require('redis');
-const { redis: redisConfig } = require('../config/db.conf');
+const { redis: redisConfig } = require('../config/db-config');
 
 const client = redis.createClient({
   host: redisConfig.host,

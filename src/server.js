@@ -5,8 +5,8 @@ const https = require('https');
 const querystring = require('querystring');
 
 // Load configuration
-const appConfig = require('./config/app.conf');
-const dbConfig = require('./config/db.conf');
+const aciConfig = require('./config/ACI-config');
+const dbConfig = require('./config/db-config');
 
 // Initialize Express app
 const app = express();
@@ -19,9 +19,9 @@ app.use(errorHandler);
 
 // Load routes
 
-const appRoutes = require('./routes/App.routes');
+const aciRoutes = require('./routes/ACI-routes');
 
-app.use('/api', appRoutes);
+app.use('/api', aciRoutes);
 
 // Connect to databases
 const { connectRedis } = require('./database/Redis.database');

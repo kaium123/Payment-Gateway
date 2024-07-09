@@ -5,4 +5,13 @@ module.exports = {
       shift4: process.env.SHIFT4_API_KEY || 'your_shift4_api_key'
     }
   };
+
+  const config = {
+    api: {
+      baseURL: 'https://eu-test.oppwa.com/v1'
+    }
+  };
+  
+  module.exports = config;
+  
   

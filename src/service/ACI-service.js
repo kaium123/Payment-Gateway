@@ -1,45 +1,29 @@
-// /service/App.service.js
-const https = require('https');
 const querystring = require('querystring');
-
-const sendRequest = (apiURL, options, postData) => {
-  return new Promise((resolve, reject) => {
-    const request = https.request(apiURL, options, (apiRes) => {
-      let data = '';
-
-      apiRes.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      apiRes.on('end', () => {
-        resolve(data);
-      });
-    });
-
-    request.on('error', (error) => {
-      reject(error);
-    });
-
-    if (postData) {
-      request.write(postData);
-    }
-    request.end();
-  });
-};
+const { ACIPaymentSchema } = require('../models/ACI-models');
+const sendRequest = require('../utils/request.utils');
+const config = require('../config/ACI-config');
 
 const createPayment = async (req) => {
+  const { error, value } = ACIPaymentSchema.validate(req.body);
+
+  if (error) {
+    throw new Error(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+  }
+
   const {
     entityId,
     amount,
     currency,
     paymentBrand,
     paymentType,
-    'card.number': cardNumber,
-    'card.holder': cardHolder,
-    'card.expiryMonth': expiryMonth,
-    'card.expiryYear': expiryYear,
-    'card.cvv': cvv
-  } = req.body;
+    card: {
+      number: cardNumber,
+      holder: cardHolder,
+      expiryMonth,
+      expiryYear,
+      cvv
+    }
+  } = value;
 
   const token = req.headers['authorization'];
 
@@ -69,7 +53,7 @@ const createPayment = async (req) => {
     }
   };
 
-  const apiURL = 'https://eu-test.oppwa.com/v1/payments';
+  const apiURL = `${config.api.baseURL}/payments`;
   return await sendRequest(apiURL, options, postData);
 };
 
@@ -87,7 +71,7 @@ const getPaymentStatus = async (req) => {
     throw new Error('Authorization token is required');
   }
 
-  const apiURL = `https://eu-test.oppwa.com/v1/payments/${paymentID}?entityId=${entityID}`;
+  const apiURL = `${config.api.baseURL}/payments/${paymentID}?entityId=${entityID}`;
   const options = {
     method: 'GET',
     headers: {

@@ -1,13 +1,12 @@
-// /controllers/App.controller.js
-const { createPayment, getPaymentStatus } = require('../service/App.service');
+const { createPayment, getPaymentStatus } = require('../service/ACI-service');
 
 const createPaymentHandler = async (req, res) => {
   try {
     const response = await createPayment(req);
     res.send(response);
   } catch (error) {
-    console.error('Error:', error.message);
-    res.status(500).send('Internal Server Error');
+    console.error('Error:', error);
+    res.status(500).send(error.message);
   }
 };
 
@@ -16,8 +15,8 @@ const getPaymentStatusHandler = async (req, res) => {
     const response = await getPaymentStatus(req);
     res.send(response);
   } catch (error) {
-    console.error('Error:', error.message);
-    res.status(500).send('Internal Server Error');
+    console.error('Error:', error);
+    res.status(500).send(error.message);
   }
 };
 
