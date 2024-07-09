@@ -1,13 +1,16 @@
 const querystring = require('querystring');
 const { ACIPaymentSchema } = require('../models/ACI-models');
-const sendRequest = require('../utils/request.utils');
-const config = require('../config/ACI-config');
+const sendRequest = require('../utils/request');
+const config = require('../config/config');
 
 const createPayment = async (req) => {
   const { error, value } = ACIPaymentSchema.validate(req.body);
 
   if (error) {
     throw new Error(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+  }
+  const p = {
+    entityId: req?.body?.entityID
   }
 
   const {

@@ -1,37 +1,37 @@
 // server.js
 const express = require('express');
 const bodyParser = require('body-parser');
-const https = require('https');
-const querystring = require('querystring');
-
-// Load configuration
-const aciConfig = require('./config/ACI-config');
-const dbConfig = require('./config/db-config');
-
-// Initialize Express app
-const app = express();
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Load middleware
-const { errorHandler } = require('./middleware/ErrorHandler.middleware');
-app.use(errorHandler);
-
-// Load routes
-
-const aciRoutes = require('./routes/ACI-routes');
-
-app.use('/api', aciRoutes);
 
 // Connect to databases
-const { connectRedis } = require('./database/Redis.database');
-const { connectMongo } = require('./database/Pg.database');
+const { connect } = require('./database/postgres-database');
 
-// connectRedis();
-// connectMongo();
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+const app = require("./app/app");
+const port = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  try {
+    res.status(200).json({ mesage: "Connections are established" });
+  } catch (err) {
+    res.status(500).json({ mesage: "Connections are not established" });
+  }
+});
+
+const connectDB = async () => {
+  try {
+      await connect()
+  } catch (err) {
+      console.log(`DB error for error ${err}`);
+      throw err;
+  }
+};
+
+app.listen(port, async () => {
+  try {
+    await connectDB();
+    console.log(`Server is listening on port ${port}`);
+  } catch (err) {
+    console.log("Server cannot be connected because of the error:");
+    console.log(err);
+  }
 });
