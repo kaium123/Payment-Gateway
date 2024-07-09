@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const { postgres } = require('../config/db.conf');
+const { postgres } = require('../config/db-config');
 
 const client = new Client({
   connectionString: postgres.uri
