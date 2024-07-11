@@ -100,12 +100,13 @@ const createPayment = async (req) => {
   return response;
 };
 
-const getAciPaymentStatus = async (transactionID) => {
-  const apiURL = `${config.api.aciBaseURL}/payments/${transactionID}`;
+const getAciPaymentStatus = async (transactionID,entityID) => {
+  const apiURL = `${config.api.aciBaseURL}/payments/${transactionID}?entityId=${entityID}`;
+  const authToken = 'OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='; 
   const options = {
     method: 'GET',
     headers: {
-      'Authorization': 'your-auth-token', // Replace with actual token
+      'Authorization': `Bearer ${authToken}`,
       'Content-Type': 'application/json'
     }
   };

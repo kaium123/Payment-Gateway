@@ -1,4 +1,4 @@
-const { createPayment, getPaymentStatus } = require('../service/aci-service');
+const { createPayment, getAciPaymentStatus } = require('../service/aci-service');
 
 const createPaymentHandler = async (req, res) => {
   try {
@@ -12,7 +12,21 @@ const createPaymentHandler = async (req, res) => {
 
 const getPaymentStatusHandler = async (req, res) => {
   try {
-    const response = await getPaymentStatus(req);
+    // Fetch transactionID from URL parameters
+    const transactionID = req.params.paymentID; 
+    console.log("transactionID: ", transactionID);
+
+    // Fetch entityID from query parameters
+    const entityID = req.query.entityId;  // Note the change here
+    console.log("entityID: ", entityID);
+
+    if (!transactionID) {
+      return res.status(400).send('Transaction ID is required');
+    }
+
+
+
+    const response = await getAciPaymentStatus(transactionID,entityID);
     res.send(response);
   } catch (error) {
     console.error('Error:', error);

@@ -131,32 +131,25 @@ const createPayment = async (req) => {
 
   return response;
 };
-const getPaymentStatus = async (req) => {
-    const chargeID = req.params.chargeID;
+const getShift4PaymentStatus = async (chargeID) => {
   
     if (!chargeID) {
       throw new Error('Charge ID is required');
     }
-  
-    const token = req.headers['authorization'];
-  
-    if (!token) {
-      throw new Error('Authorization token is required');
-    }
-  
-    console.log(chargeID);
+
   
     const apiURL = `${config.api.shift4BaseURL}/charges/${chargeID}`;
     console.log(apiURL);
     const options = {
       method: 'GET',
       headers: {
-        'Authorization': token
+        'Authorization': `Basic ${Buffer.from(config.apiKeys.shift4 + ':').toString('base64')}`
       }
     };
+    
   
     return await sendRequest(apiURL, options);
   };
   
-  module.exports = { createPayment, getPaymentStatus };
+  module.exports = { createPayment, getShift4PaymentStatus };
   

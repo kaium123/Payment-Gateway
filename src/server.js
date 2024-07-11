@@ -1,5 +1,5 @@
 const { connectDB } = require('./database/postgres-database');
-const { runMigrations } = require('./sql/run-migrations'); // Adjust the path if necessary
+const { runMigrations } = require('./sql/run-migrations'); 
 
 const app = require('./app/app');
 const port = process.env.PORT || 3000;
