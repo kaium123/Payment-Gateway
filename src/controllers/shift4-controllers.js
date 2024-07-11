@@ -1,4 +1,4 @@
-const { createPayment, getPaymentStatus } = require('../service/aci-service');
+const { createPayment, getPaymentStatus } = require('../service/shift4-service');
 
 const createPaymentHandler = async (req, res) => {
   try {

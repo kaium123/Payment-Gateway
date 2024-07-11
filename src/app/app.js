@@ -2,6 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const aciRoutes = require('../routes/ACI-routes');
+const shift4routes = require('../routes/shift4-routes');
+const { errorHandler } = require('../middleware/error-handler');
+
+// es6 import from , use full path
 
 // Initialize Express app
 const app = express();
@@ -9,7 +13,6 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Load middleware
-const { errorHandler } = require('../middleware/error-handler');
 app.use(errorHandler);
 
 app.use(bodyParser.json());
@@ -34,6 +37,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api', aciRoutes);
+app.use('/api/payments', aciRoutes);
+app.use('/api/payments', shift4routes);
+
 
 module.exports = app;

@@ -1,16 +1,14 @@
-const querystring = require('querystring');
-const { ACIPaymentSchema } = require('../models/ACI-models');
+const { aciPaymentSchema } = require('../models/aci-models');
+const { PaymentRecord, validatePaymentRecord } = require('../models/payment-records');
 const sendRequest = require('../utils/request');
 const config = require('../config/config');
+const querystring = require('querystring');
 
 const createPayment = async (req) => {
-  const { error, value } = ACIPaymentSchema.validate(req.body);
+  const { error, value } = aciPaymentSchema.validate(req.body);
 
   if (error) {
     throw new Error(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
-  }
-  const p = {
-    entityId: req?.body?.entityID
   }
 
   const {
@@ -56,8 +54,32 @@ const createPayment = async (req) => {
     }
   };
 
-  const apiURL = `${config.api.baseURL}/payments`;
-  return await sendRequest(apiURL, options, postData);
+  const apiURL = `${config.api.aciBaseURL}/payments`;
+  const response = await sendRequest(apiURL, options, postData);
+
+  // Extract id from response and save it in payment_records table
+  if (response && response.id) {
+    const record = {
+      transactionID: response.id,
+      transactionType: paymentType,
+      entityID: entityId,
+    };
+
+    const { error } = validatePaymentRecord(record);
+
+    if (error) {
+      throw new Error(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+    }
+
+    try {
+      await PaymentRecord.create(record);
+    } catch (err) {
+      console.error('Error saving payment record:', err);
+      throw err;
+    }
+  }
+
+  return response;
 };
 
 const getPaymentStatus = async (req) => {
@@ -74,7 +96,7 @@ const getPaymentStatus = async (req) => {
     throw new Error('Authorization token is required');
   }
 
-  const apiURL = `${config.api.baseURL}/payments/${paymentID}?entityId=${entityID}`;
+  const apiURL = `${config.api.aciBaseURL}/payments/${paymentID}?entityId=${entityID}`;
   const options = {
     method: 'GET',
     headers: {

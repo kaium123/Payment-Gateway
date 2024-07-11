@@ -1,37 +1,26 @@
-// server.js
-const express = require('express');
-const bodyParser = require('body-parser');
+const { connectDB } = require('./database/postgres-database');
+const { runMigrations } = require('./sql/run-migrations'); // Adjust the path if necessary
 
-// Connect to databases
-const { connect } = require('./database/postgres-database');
-
-
-const app = require("./app/app");
+const app = require('./app/app');
 const port = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   try {
-    res.status(200).json({ mesage: "Connections are established" });
+    res.status(200).json({ message: 'Connections are established' });
   } catch (err) {
-    res.status(500).json({ mesage: "Connections are not established" });
+    res.status(500).json({ message: 'Connections are not established' });
   }
 });
 
-const connectDB = async () => {
-  try {
-      await connect()
-  } catch (err) {
-      console.log(`DB error for error ${err}`);
-      throw err;
-  }
-};
 
-app.listen(port, async () => {
-  try {
-    await connectDB();
-    console.log(`Server is listening on port ${port}`);
-  } catch (err) {
-    console.log("Server cannot be connected because of the error:");
-    console.log(err);
-  }
+runMigrations().then(() => {
+  app.listen(port, async () => {
+    try {
+      await connectDB();
+      console.log(`Server is listening on port ${port}`);
+    } catch (err) {
+      console.log('Server cannot be connected due to error:');
+      console.log(err);
+    }
+  });
 });

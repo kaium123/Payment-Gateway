@@ -6,6 +6,7 @@ module.exports = {
     shift4: process.env.SHIFT4_API_KEY || 'your_shift4_api_key'
   },
   api: {
-    baseURL: 'https://eu-test.oppwa.com/v1'
+    aciBaseURL: 'https://eu-test.oppwa.com/v1',
+    shift4BaseURL: 'https://api.shift4.com'
   }
 };
