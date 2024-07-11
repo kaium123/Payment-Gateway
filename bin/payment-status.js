@@ -1,20 +1,21 @@
 #!/usr/bin/env node
 
-const { createPayment, getPaymentStatus } = require('../src/service/aci-service');
+const { program } = require('commander');
+const { getPaymentRecord } = require('../src/service/payment-status');
 const config = require('../src/config/config');
 
-const run = async () => {
-  
-      const paymentID = 'your_payment_id';
-      const entityID = '8a8294174b7ecb28014b9699220015ca';
+program
+  .description('Get payment status with ACI')
+  .option('--payment_id <paymentID>', 'Payment ID')
+  .action(async (options) => {
+    const { payment_id } = options;
 
-      try {
-        const result = await getPaymentStatus({ params: { paymentID }, query: { entityId: entityID }, headers: { authorization: token } });
-        console.log('Payment status:', result);
-      } catch (error) {
-        console.error('Error getting payment status:', error);
-      }
+    try {
+      const result = await getPaymentRecord(payment_id );
+      console.log('Payment status:', result);
+    } catch (error) {
+      console.error('Error getting payment status:', error);
+    }
+  });
 
-};
-
-run();
+program.parse(process.argv);

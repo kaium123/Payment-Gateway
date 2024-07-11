@@ -13,8 +13,8 @@ enable cli
 npm install 
 sudo npm install -g . 
 npm set prefix ~/.npm
-PATH="$HOME/.npm/bin:$PATH"
-PATH="./node_modules/.bin:$PATH"
+export PATH="$HOME/.npm/bin:$PATH"
+export PATH="./node_modules/.bin:$PATH"
 
 
 sql migration

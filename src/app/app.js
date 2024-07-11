@@ -1,10 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const aciRoutes = require('../routes/ACI-routes');
-const shift4routes = require('../routes/shift4-routes');
+const aciRoutes = require('../routes/aci-payment-process');
+const shift4routes = require('../routes/shift4-payment-process');
 const paymentStatus = require('../routes/payment-status');
-
 const { errorHandler } = require('../middleware/error-handler');
 
 // es6 import from , use full path

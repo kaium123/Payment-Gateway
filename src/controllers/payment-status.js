@@ -1,4 +1,4 @@
-const { getPaymentRecord } = require('../service/payment-status'); // Ensure this path is correct
+const { getPaymentRecord } = require('../services/payment-status'); // Ensure this path is correct
 
 const getPaymentRecordHandler = async (req, res) => {
   const { id } = req.params;

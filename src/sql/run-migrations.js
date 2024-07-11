@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
-const {connectDB } = require('../database/postgres-database')
+const {connectDB } = require('../database/postgres')
 
 // Define migration direction constants
 const DirectionUp = 'up';

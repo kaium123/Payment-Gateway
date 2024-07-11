@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentHandler, getPaymentStatusHandler } = require('../controllers/shift4-controllers');
+const { createPaymentHandler, getPaymentStatusHandler } = require('../controllers/shift4-payment-process');
 
 
 router.post('/shift4', createPaymentHandler);

@@ -1,4 +1,4 @@
-const { createPayment, getAciPaymentStatus } = require('../service/aci-service');
+const { createPayment, getAciPaymentStatus } = require('../services/aci-payment-process');
 
 const createPaymentHandler = async (req, res) => {
   try {

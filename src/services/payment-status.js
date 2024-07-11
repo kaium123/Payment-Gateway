@@ -1,6 +1,6 @@
 const { PaymentRecord } = require('../models/payment-records');
-const { getAciPaymentStatus } = require('./aci-service');
-const { getShift4PaymentStatus } = require('./shift4-service');
+const { getAciPaymentStatus } = require('./aci-payment-process');
+const { getShift4PaymentStatus } = require('./shift4-payment-process');
 
 const getPaymentRecord = async (transactionID) => {
   if (!transactionID) {

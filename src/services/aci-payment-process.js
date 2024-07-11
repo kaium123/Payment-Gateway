@@ -1,4 +1,4 @@
-const { aciPaymentSchema } = require('../models/aci-models');
+const { aciPaymentSchema } = require('../models/aci-payment-process');
 const { PaymentRecord } = require('../models/payment-records');
 const { validatePaymentRecord } = require('../utils/validation');
 

@@ -1,4 +1,4 @@
-const { connectDB } = require('./database/postgres-database');
+const { connectDB } = require('./database/postgres');
 const { runMigrations } = require('./sql/run-migrations'); 
 
 const app = require('./app/app');

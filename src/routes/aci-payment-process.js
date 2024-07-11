@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentHandler, getPaymentStatusHandler } = require('../controllers/aci-controller');
+const { createPaymentHandler, getPaymentStatusHandler } = require('../controllers/aci-payment-process');
 
 router.post('/aci', createPaymentHandler);
 router.get('/aci/:paymentID', getPaymentStatusHandler);

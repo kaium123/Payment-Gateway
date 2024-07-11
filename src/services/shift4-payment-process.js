@@ -1,5 +1,5 @@
 const querystring = require('querystring');
-const { createTokenSchema, shift4PaymentSchema } = require('../models/shift4-models'); // Adjust path if necessary
+const { createTokenSchema, shift4PaymentSchema } = require('../models/shift4-payment-process'); // Adjust path if necessary
 const sendRequest = require('../utils/request');
 const config = require('../config/config');
 const { PaymentRecord } = require('../models/payment-records');
