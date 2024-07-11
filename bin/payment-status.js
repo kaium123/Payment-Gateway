@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { program } = require('commander');
-const { getPaymentRecord } = require('../src/service/payment-status');
+const { getPaymentStatus } = require('../src/service/payment-status');
 const config = require('../src/config/config');
 
 program
@@ -11,7 +11,7 @@ program
     const { payment_id } = options;
 
     try {
-      const result = await getPaymentRecord(payment_id );
+      const result = await getPaymentStatus(payment_id );
       console.log('Payment status:', result);
     } catch (error) {
       console.error('Error getting payment status:', error);

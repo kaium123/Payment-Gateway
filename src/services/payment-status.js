@@ -1,20 +1,10 @@
-const { PaymentRecord } = require('../models/payment-records');
-const { getAciPaymentStatus } = require('./aci-payment-process');
-const { getShift4PaymentStatus } = require('./shift4-payment-process');
+const { getAciPaymentStatus } = require('./aci-payment');
+const { getShift4PaymentStatus } = require('./shift4-payment');
+const { getPaymentRecord } = require('../repository/payment-records')
 
-const getPaymentRecord = async (transactionID) => {
-  if (!transactionID) {
-    throw new Error('Transaction ID is required');
-  }
 
-  try {
-    const record = await PaymentRecord.findOne({ where: { transactionID } });
-
-    if (!record) {
-      throw new Error(`Payment record with ID ${transactionID} not found`);
-    }
-
-    console.log("entity id ",record.entityID)
+const getPaymentStatus = async (transactionID) => {
+    const record = await getPaymentRecord(transactionID)
 
     let status;
     if (record.transactionType === 'aci') {
@@ -30,16 +20,9 @@ const getPaymentRecord = async (transactionID) => {
       console.log("Shift4 Status:", shift4Status);
       return { ...record.toJSON(), shift4Status: JSON.parse(shift4Status) };
     }
-
-
-
     return record;
-  } catch (error) {
-    console.error('Error retrieving payment record:', error);
-    throw error;
-  }
 };
 
 module.exports = {
-  getPaymentRecord,
+  getPaymentStatus,
 };

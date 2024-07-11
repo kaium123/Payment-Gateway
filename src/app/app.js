@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const aciRoutes = require('../routes/aci-payment-process');
-const shift4routes = require('../routes/shift4-payment-process');
+const aciRoutes = require('../routes/aci-payment');
+const shift4routes = require('../routes/shift4-payment');
 const paymentStatus = require('../routes/payment-status');
 const { errorHandler } = require('../middleware/error-handler');
 

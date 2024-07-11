@@ -1,10 +1,12 @@
-const { aciPaymentSchema } = require('../models/aci-payment-process');
+const { aciPaymentSchema } = require('../models/aci-payment');
 const { PaymentRecord } = require('../models/payment-records');
 const { validatePaymentRecord } = require('../utils/validation');
+const { SavePaymentRecord } = require('../repository/payment-records')
 
 const sendRequest = require('../utils/request');
 const config = require('../config/config');
 const querystring = require('querystring');
+
 
 const createPayment = async (req) => {
   const { error, value } = aciPaymentSchema.validate(req.body);
@@ -55,18 +57,13 @@ const createPayment = async (req) => {
       'Content-Length': Buffer.byteLength(postData)
     }
   };
+  console.log(entityId)
 
   const apiURL = `${config.api.aciBaseURL}/payments`;
   const responseString = await sendRequest(apiURL, options, postData);
 
   // Parse the response string into an object
   const response = JSON.parse(responseString);
-
-  // Print the response
-  console.log("API Response:", response);
-  console.log("API Response ID Field:", response.id);
-  console.log("Type of API Response:", typeof response);
-  console.log("Type of API Response ID Field:", typeof response.id);
 
   // Extract id from response and save it in payment_records table
   if (response && response.id) {
@@ -75,24 +72,10 @@ const createPayment = async (req) => {
       transactionType: "aci",
       entityID: entityId,
     };
+    console.log(entityId)
 
-    const validation = validatePaymentRecord(record);
 
-    if (validation.error) {
-      throw new Error(`Validation error: ${validation.error.details.map(x => x.message).join(', ')}`);
-    }
-
-    // Log the record object
-    console.log("Payment Record:", record);
-
-    try {
-      const savedRecord = await PaymentRecord.create(record);
-      // Log the saved record to confirm it was saved
-      console.log("Saved Payment Record:", savedRecord);
-    } catch (err) {
-      console.error('Error saving payment record:', err);
-      throw err;
-    }
+    const savedRecord = await SavePaymentRecord(record)
   } else {
     console.error("API response does not contain 'id' field:", response);
   }
