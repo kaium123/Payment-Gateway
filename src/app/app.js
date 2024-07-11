@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const aciRoutes = require('../routes/ACI-routes');
 const shift4routes = require('../routes/shift4-routes');
+const paymentStatus = require('../routes/payment-status');
+
 const { errorHandler } = require('../middleware/error-handler');
 
 // es6 import from , use full path
@@ -39,6 +41,7 @@ app.use((req, res, next) => {
 
 app.use('/api/payments', aciRoutes);
 app.use('/api/payments', shift4routes);
+app.use('/api/payments', paymentStatus);
 
 
 module.exports = app;

@@ -1,15 +1,9 @@
-// src/database/postgres-database.js
 const { Sequelize } = require('sequelize');
-const { postgres } = require('../config/db-config');
+const config = require('../config/config.json').development;
 
-const sequelize = new Sequelize(
-    postgres.PG_DB,
-    postgres.PG_USER,
-    postgres.PG_PASSWORD,
-    {
-        host: postgres.PG_HOST,
-        dialect: 'postgres',
-    }
-);
+const sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  dialect: config.dialect,
+});
 
 module.exports = sequelize;
