@@ -135,6 +135,16 @@ const createPayment = async (req) => {
       console.error("API response does not contain 'id' field:", response);
     }
 
+    return {
+      transactionID: response.id,
+      amount: amount,
+      currency: currency,
+      card: {
+        bin:response.card.first6
+      },
+      created: response.timestamp
+    };
+
     return response;
   } catch (error) {
     logger.error('Error creating payment:', error.message);
