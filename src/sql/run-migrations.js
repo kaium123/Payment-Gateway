@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
-const { connectDB } = require('../database/postgres');
-const logger = require('../utils/logger');
+const { connectDB } = require('../infra/database/postgres');
+const logger = require('../utils/logger/logger');
 
 // Create the schema_migrations table if it doesn't exist
 const createSchemaMigration = async (client) => {
@@ -20,9 +20,11 @@ const createSchemaMigration = async (client) => {
     if (count === 0) {
       await client.query('INSERT INTO schema_migrations (version, dirty) VALUES ($1, $2)', [0, false]);
     }
+
   } catch (err) {
     logger.error('Error creating schema_migrations table:', err);
     throw err;
+
   }
 };
 
@@ -37,9 +39,11 @@ const incrementMigrationNumber = async (client, newVersion) => {
       [migrationNumber, newVersion, false]
     );
     logger.info(`Migration version updated to ${newVersion}`);
+
   } catch (err) {
     logger.error('Error incrementing migration version:', err);
     throw err;
+
   }
 };
 
@@ -72,8 +76,10 @@ const extractMigrationNumber = (fileName) => {
   const match = fileName.match(/^(\d+)_/);
   if (match) {
     return parseInt(match[1], 10);
+
   }
   throw new Error('Invalid migration file name format');
+
 };
 
 // Perform migration
@@ -95,9 +101,11 @@ const migrate = async (client, dir) => {
 
       try {
         migrationNumber = extractMigrationNumber(fileName);
+
       } catch (error) {
         logger.error(`Skipping invalid migration file: ${fileName} - ${error.message}`);
         continue; 
+
       }
 
       if ((migrationNumber > currentMigrationVersion)) {
@@ -109,9 +117,11 @@ const migrate = async (client, dir) => {
           await client.query(sql);
           logger.info(`Migration ${file} applied successfully.`);
           latestMigrationNumber = migrationNumber;
+
         } catch (err) {
           logger.error(`Error applying migration ${file}:`, err);
           throw err; 
+
         }
       }
     }
@@ -120,25 +130,30 @@ const migrate = async (client, dir) => {
     if (latestMigrationNumber > currentMigrationVersion) {
       await incrementMigrationNumber(client, latestMigrationNumber + 1);
     }
+
   } catch (err) {
     logger.error('Migration process failed:', err);
     throw err;
+
   }
 };
 
 // Main function to run migrations
 const runMigrations = async () => {
-  const migrationsDir = path.join(__dirname, 'migrations'); // Directory containing migration SQL files
+  const migrationsDir = path.join(__dirname, 'migrations');
   const client = await connectDB();
 
   try {
     await createSchemaMigration(client);
     await migrate(client, migrationsDir);
+
   } catch (err) {
     logger.error('Error applying migrations:', err);
     process.exit(1);
+
   } finally {
     await client.end();
+
   }
 };
 

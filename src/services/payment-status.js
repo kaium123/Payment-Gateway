@@ -1,8 +1,8 @@
 const { getAciPaymentStatus } = require('./aci-payment');
 const { getShift4PaymentStatus } = require('./shift4-payment');
 const { getPaymentRecord } = require('../repository/payment-records');
-const logger = require('../utils/logger');
-const { NotFoundError, ValidationError } = require('../utils/error');
+const logger = require('../utils/logger/logger');
+const { NotFoundError, ValidationError } = require('../utils/error/error');
 
 const getPaymentStatus = async (transactionID) => {
   try {

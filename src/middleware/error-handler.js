@@ -1,11 +1,9 @@
-const logger = require('../utils/logger');
-const { AppError } = require('../utils/error');
+const logger = require('../utils/logger/logger');
+const { AppError } = require('../utils/error/error');
 
 // Error handling middleware
 const errorHandler = (err, req, res, next) => {
   logger.error(err);
-
-  console.log(err.isAppError)
 
   if (err.isAppError) {
     return res.status(err.statusCode).json({
