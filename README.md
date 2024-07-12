@@ -168,15 +168,102 @@ Endpoints
         }
 
 Command-Line Interface (CLI)
-    Payment with Shift4
+    Payment with ACI
         pay_with aci --amount 100 --currency USD --card_number 4111111111111111 --expiry_date 12/23 --cvv 123 --card_holder "Jane Jones"
 
+    Reponse:
+        Payment created: {
+            id: '8ac7a4a190a7734a0190a79084940b59',
+            paymentType: 'DB',
+            paymentBrand: 'VISA',
+            result: {
+                code: '100.390.106',
+                description: 'Transaction rejected because of error in 3DSecure configuration'
+            },
+            resultDetails: { clearingInstituteName: 'JCB via B24-eps' },
+            card: {
+                bin: '411111',
+                last4Digits: '1111',
+                holder: 'Jane Jones',
+                expiryMonth: '12',
+                expiryYear: '2023'
+            },
+            risk: { score: '100' },
+            buildNumber: 'd7c8b82138c319cb28b8bf69e87b72549f520681@2024-07-12 00:42:34 +0000',
+            timestamp: '2024-07-12 15:29:44.599+0000',
+            ndc: '8a8294174b7ecb28014b9699220015ca_f3839c5ed92b49b0861645386112ddd4',
+            source: 'OPP',
+            paymentMethod: 'DC',
+            shortId: '2652.6409.5375'
+        }
 
-    Payment with ACI
+
+    Payment with Shift4
         pay_with shift4 --amount 100 --currency USD --card_number 4111111111111111 --expiry_date 12/23 --cvv 123 --card_holder "Jane Jones"
+    Response: 
+        Payment created: {
+            id: '8ac7a4a290a77bcf0190a792250f5893',
+            paymentType: 'DB',
+            paymentBrand: 'VISA',
+            result: {
+                code: '100.390.106',
+                description: 'Transaction rejected because of error in 3DSecure configuration'
+            },
+            resultDetails: { clearingInstituteName: 'JCB via B24-eps' },
+            card: {
+                bin: '411111',
+                last4Digits: '1111',
+                holder: 'Jane Jones',
+                expiryMonth: '12',
+                expiryYear: '2023'
+            },
+            risk: { score: '100' },
+            buildNumber: 'd7c8b82138c319cb28b8bf69e87b72549f520681@2024-07-12 00:42:34 +0000',
+            timestamp: '2024-07-12 15:31:31.219+0000',
+            ndc: '8a8294174b7ecb28014b9699220015ca_ae1c717c277b4a1c995f1e45d8fe7572',
+            source: 'OPP',
+            paymentMethod: 'DC',
+            shortId: '8238.7854.1455'
+        }
 
     Get Payment Status
-        get_payment_status --payment_id
+        get_payment_status --payment_id 8ac7a4a290a77bcf0190a792250f5893
+
+    Response : 
+        Payment status: {
+            transactionID: '8ac7a4a290a77bcf0190a792250f5893',
+            transactionType: 'aci',
+            entityID: '8a8294174b7ecb28014b9699220015ca',
+            aciStatus: {
+                id: '8ac7a4a290a77bcf0190a792250f5893',
+                paymentType: 'DB',
+                paymentBrand: 'VISA',
+                result: {
+                code: '100.390.106',
+                description: 'Transaction rejected because of error in 3DSecure configuration'
+                },
+                resultDetails: { clearingInstituteName: 'JCB via B24-eps' },
+                card: {
+                bin: '411111',
+                last4Digits: '1111',
+                holder: 'Jane Jones',
+                expiryMonth: '12',
+                expiryYear: '2023',
+                issuer: [Object],
+                type: 'DEBIT',
+                level: 'CLASSIC',
+                country: 'PL',
+                maxPanLength: '16',
+                binType: 'PERSONAL',
+                regulatedFlag: 'N'
+                },
+                customParameters: { CTPE_DESCRIPTOR_TEMPLATE: '' },
+                risk: { score: '100' },
+                buildNumber: 'd7c8b82138c319cb28b8bf69e87b72549f520681@2024-07-12 00:42:34 +0000',
+                timestamp: '2024-07-12 15:31:31.219+0000',
+                ndc: '8a8294174b7ecb28014b9699220015ca_9252615d52d84abf82d589c61cf11037'
+            }
+        }
 
 Usage Instructions
     Clone the Repository
