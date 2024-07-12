@@ -1,49 +1,46 @@
-
 const { PaymentRecord } = require('../models/payment-records');
 const { validatePaymentRecord } = require('../utils/validation');
+const logger = require('../utils/logger');
+const { ValidationError, NotFoundError } = require('../utils/error');
 
 const SavePaymentRecord = async (record) => {
+  const validation = validatePaymentRecord(record);
 
-      const validation = validatePaymentRecord(record);
-  
-      if (validation.error) {
-        throw new Error(`Validation error: ${validation.error.details.map(x => x.message).join(', ')}`);
-      }
-  
-      // Log the record object
-      console.log("Payment Record:", record);
-      let savedRecord;
-      try {
-        savedRecord = await PaymentRecord.create(record);
-        // Log the saved record to confirm it was saved
-        console.log("Saved Payment Record:", savedRecord);
-      } catch (err) {
-        console.error('Error saving payment record:', err);
-        throw err;
-      }
-    
-  
-    return savedRecord;
-  };
+  if (validation.error) {
+    throw new ValidationError(`Validation error: ${validation.error.details.map(x => x.message).join(', ')}`);
+  }
 
+  // Log the record object
+  logger.info("Payment Record:", { record });
+  let savedRecord;
+
+  try {
+    savedRecord = await PaymentRecord.create(record);
+    logger.info("Saved Payment Record:", { savedRecord });
+
+  } catch (error) {
+    logger.error('Error saving payment record:', error.message);
+    throw error;
+
+  }
+
+  return savedRecord;
+};
 
 const getPaymentRecord = async (transactionID) => {
-    if (!transactionID) {
-      throw new Error('Transaction ID is required');
-    }
-  
-    try {
-      const record = await PaymentRecord.findOne({ where: { transactionID } });
-  
-      if (!record) {
-        throw new Error(`Payment record with ID ${transactionID} not found`);
-      }
 
-      return record;
-    } catch (error) {
-      console.error('Error retrieving payment record:', error);
-      throw error;
+  try {
+    const record = await PaymentRecord.findOne({ where: { transactionID } });
+    if (!record) {
+      throw new NotFoundError(`Payment record with ID ${transactionID} not found`);
     }
-  };
+    return record;
 
-  module.exports = { SavePaymentRecord, getPaymentRecord };
+  } catch (error) {
+    logger.error('Error retrieving payment record:', error.message);
+    throw error;
+    
+  }
+};
+
+module.exports = { SavePaymentRecord, getPaymentRecord };

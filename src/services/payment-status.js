@@ -1,26 +1,36 @@
 const { getAciPaymentStatus } = require('./aci-payment');
 const { getShift4PaymentStatus } = require('./shift4-payment');
-const { getPaymentRecord } = require('../repository/payment-records')
-
+const { getPaymentRecord } = require('../repository/payment-records');
+const logger = require('../utils/logger');
+const { NotFoundError, ValidationError } = require('../utils/error');
 
 const getPaymentStatus = async (transactionID) => {
-    const record = await getPaymentRecord(transactionID)
+  try {
+    if (!transactionID) {
+      throw new ValidationError('Transaction ID is required');
+    }
 
-    let status;
+    const record = await getPaymentRecord(transactionID);
+
     if (record.transactionType === 'aci') {
-      // Call ACI service to get the payment status
-      console.log("Fetching ACI status...");
+      logger.info("Fetching ACI status...");
       const aciStatus = await getAciPaymentStatus(transactionID, record.entityID);
-      console.log("ACI Status:", aciStatus);
-      return { ...record.toJSON(), aciStatus }; // No JSON.parse needed
+      logger.info("ACI Status:", { aciStatus });
+      return { ...record.toJSON(), aciStatus };
+
     } else if (record.transactionType === 'shift4') {
-      // Call Shift4 service to get the payment status
-      console.log("Fetching Shift4 status...");
+      logger.info("Fetching Shift4 status...");
       const shift4Status = await getShift4PaymentStatus(transactionID);
-      console.log("Shift4 Status:", shift4Status);
+      logger.info("Shift4 Status:", { shift4Status });
       return { ...record.toJSON(), shift4Status: JSON.parse(shift4Status) };
+
     }
     return record;
+
+  } catch (error) {
+    logger.error('Error retrieving payment status:', { error: error.message });
+    throw error;
+  }
 };
 
 module.exports = {

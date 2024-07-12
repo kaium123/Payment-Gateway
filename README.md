@@ -15,6 +15,7 @@ sudo npm install -g .
 npm set prefix ~/.npm
 export PATH="$HOME/.npm/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
+npm link
 
 
 sql migration
@@ -25,3 +26,9 @@ npm install node-pg-migrate
 install sequelize
 npm install sequelize pg
 
+install logger package
+npm install pino
+
+npm install dateformat
+
+npm install winston-daily-rotate-file

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 const { program } = require('commander');
-const { getPaymentStatus } = require('../src/service/payment-status');
-const config = require('../src/config/config');
+const { getPaymentStatus } = require('../src/services/payment-status');
+const logger = require('../src/utils/logger');
+
 
 program
   .description('Get payment status with ACI')
@@ -13,8 +14,10 @@ program
     try {
       const result = await getPaymentStatus(payment_id );
       console.log('Payment status:', result);
+      
     } catch (error) {
-      console.error('Error getting payment status:', error);
+      logger.error('Error retrieving payment record:', error.message);
+
     }
   });
 
