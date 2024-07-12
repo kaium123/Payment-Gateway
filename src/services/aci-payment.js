@@ -10,7 +10,8 @@ const { ValidationError, UnauthorizedError, AppError } = require('../utils/error
 
 const createPayment = async (req) => {
   const entityId = config.apiKeys.aciEntityID
-  const cardHolder = req.body
+  const paymentType = "DB"
+  const paymentBrand = "VISA"
   const { error, value } = aciPaymentSchema.validate(req.body);
 
   if (error) {
@@ -20,8 +21,6 @@ const createPayment = async (req) => {
   const {
     amount,
     currency,
-    paymentBrand,
-    paymentType,
     card: {
       number: cardNumber,
       expiryMonth,
