@@ -7,7 +7,9 @@ module.exports = {
   apiKeys: {
     aciBrearerToken: process.env.ACI_BEARER_TOKEN,
     shift4ApiKey: process.env.SHIFT4_API_KEY,
-    aciEntityID: process.env.ACI_ENTITY_ID
+    aciEntityID: process.env.ACI_ENTITY_ID,
+    shift4TokenCreateKey: process.env.SHIFT4_TOKEN_CREATE_KEY,
+
 
   },
   api: {
