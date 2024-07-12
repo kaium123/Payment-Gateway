@@ -8,6 +8,8 @@ const logger = require('../utils/logger'); // Assuming logger is properly set up
 const { ValidationError, NotFoundError, UnauthorizedError, AppError } = require('../utils/error');
 
 const createToken = async (tokenReq, authHeader) => {
+  const authToken = `Basic ${Buffer.from(config.apiKeys.shift4TokenCreateKey + ':').toString('base64')}`;
+
   try {
     const { error, value } = createTokenSchema.validate(tokenReq);
 
@@ -25,15 +27,12 @@ const createToken = async (tokenReq, authHeader) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        'Authorization': authToken,
         'Content-Length': postData.length,
       },
     };
 
-    console.log(postData);
-
     const apiURL = `${config.api.shift4BaseURL}/tokens`;
-    console.log(apiURL);
     return await sendRequest(apiURL, options, postData);
   } catch (error) {
     logger.error('Error creating token:', error.message);
@@ -50,6 +49,8 @@ const createPayment = async (req) => {
     if (error) {
       throw ValidationError(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
     }
+
+    console.log(config.apiKeys.shift4ApiKey)
 
     const authToken = `Basic ${Buffer.from(config.apiKeys.shift4ApiKey + ':').toString('base64')}`;
 
@@ -98,6 +99,8 @@ const createPayment = async (req) => {
 
     const apiURL = `${config.api.shift4BaseURL}/charges`;
     console.log(apiURL);
+    console.log(authToken);
+
     const responseString = await sendRequest(apiURL, options, postData);
 
     // Parse the response string into an object

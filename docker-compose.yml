@@ -10,7 +10,8 @@ services:
     environment:
       - PORT=3000
       - OPPWA_BEARER_TOKEN=your_oppwa_bearer_token
-      - SHIFT4_API_KEY=your_shift4_api_key
+      - SHIFT4_API_KEY=sk_test_KMLVbQzUBDYOJYshIzwYj5O6
+      - SHIFT4_TOKEN_CREATE_KEY=pk_test_KMLVbPcojXEwtbrP52fCmCJ9
       - ACI_BASE_URL=https://eu-test.oppwa.com/v1
       - SHIFT4_BASE_URL=https://api.shift4.com
       - PG_DB=payment_gateway

@@ -20,6 +20,8 @@ Usage Instructions
 
     Install Dependencies
         npm install
+    
+    To configure the environment file, provide the appropriate values for ACI_BEARER_TOKEN, SHIFT4_API_KEY, and SHIFT4_TOKEN_CREATE_KEY. If you use Docker containers to access endpoints, set the environment variables in the Docker Compose file.
 
     Start project 
         Start the Node.js project:(add database configuration correctly in env)
