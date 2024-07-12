@@ -4,6 +4,38 @@ Payment Gateway API Documentation
 Overview
     This API allows processing payments using Shift4 and ACI, and provides endpoints to retrieve payment status by ID. A command-line interface (CLI) is also provided to interact with the API.
 
+Handling Payment Status Requests
+    When I receive a request to check the payment status, I only get the transaction ID. I do not initially know whether this transaction is for an ACI payment or a Shift4 payment. To resolve this, I implemented a solution where, during the payment processing request, I store the transaction ID along with the provider type (ACI or Shift4) in my database.
+
+When a request comes in to check the payment status, I first fetch the transaction details from the database to determine the provider type. If the provider type is ACI, I send the request to ACI's endpoint; otherwise, I send the request to Shift4's endpoint. This approach ensures that the request is directed to the correct payment provider.
+
+
+Usage Instructions
+    Clone the Repository
+
+        git clone https://github.com/kaium123/Payment-Gateway.git
+
+    Change Directory
+        cd Payment-Gateway
+
+    Install Dependencies
+        npm install
+    
+    Start Docker Containers
+        docker compose up
+
+        Now we can process and check status of payments using REST API
+
+    To usage CLI follow the instruction
+        npm install 
+        sudo npm install -g . 
+        npm set prefix ~/.npm
+        export PATH="$HOME/.npm/bin:$PATH"
+        export PATH="./node_modules/.bin:$PATH"
+        npm link
+
+        Now we can process and check status of a payment
+
 
 Endpoints
     1. Process a Payment using Shift4
