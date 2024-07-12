@@ -1,18 +1,18 @@
 const { aciPaymentSchema } = require('../models/aci-payment');
 const { PaymentRecord } = require('../models/payment-records');
 const { validatePaymentRecord } = require('../utils/validation');
-const { SavePaymentRecord } = require('../repository/payment-records')
-
+const { SavePaymentRecord } = require('../repository/payment-records');
 const sendRequest = require('../utils/request');
 const config = require('../config/config');
 const querystring = require('querystring');
-
+const logger = require('../utils/logger');
+const { ValidationError, UnauthorizedError, AppError } = require('../utils/error');
 
 const createPayment = async (req) => {
   const { error, value } = aciPaymentSchema.validate(req.body);
 
   if (error) {
-    throw new Error(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+    throw new ValidationError(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
   }
 
   const {
@@ -33,7 +33,7 @@ const createPayment = async (req) => {
   const token = req.headers['authorization'];
 
   if (!token) {
-    throw new Error('Authorization token is required');
+    throw new UnauthorizedError('Authorization token is required');
   }
 
   const postData = querystring.stringify({
@@ -57,35 +57,40 @@ const createPayment = async (req) => {
       'Content-Length': Buffer.byteLength(postData)
     }
   };
-  console.log(entityId)
-
-  const apiURL = `${config.api.aciBaseURL}/payments`;
-  const responseString = await sendRequest(apiURL, options, postData);
-
-  // Parse the response string into an object
-  const response = JSON.parse(responseString);
-
-  // Extract id from response and save it in payment_records table
-  if (response && response.id) {
-    const record = {
-      transactionID: response.id,
-      transactionType: "aci",
-      entityID: entityId,
-    };
-    console.log(entityId)
+  console.log(token)
 
 
-    const savedRecord = await SavePaymentRecord(record)
-  } else {
-    console.error("API response does not contain 'id' field:", response);
+  try {
+    const apiURL = `${config.api.aciBaseURL}/payments`;
+    console.log(apiURL)
+
+    const responseString = await sendRequest(apiURL, options, postData);
+    const response = JSON.parse(responseString);
+
+    if (response && response.id) {
+      const record = {
+        transactionID: response.id,
+        transactionType: 'aci',
+        entityID: entityId,
+      };
+
+      const savedRecord = await SavePaymentRecord(record);
+    } else {
+      logger.error("API response does not contain 'id' field:", response);
+      throw new AppError("API response does not contain 'id' field");
+    }
+
+    return response;
+  } catch (error) {
+    logger.error('Error creating payment:', error.message);
+    throw error;
   }
-
-  return response;
 };
 
-const getAciPaymentStatus = async (transactionID,entityID) => {
+const getAciPaymentStatus = async (transactionID, entityID) => {
   const apiURL = `${config.api.aciBaseURL}/payments/${transactionID}?entityId=${entityID}`;
-  const authToken = 'OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg='; 
+  const authToken = config.apiKeys.aciBrearerToken; 
+  console.log(authToken)
   const options = {
     method: 'GET',
     headers: {
@@ -98,7 +103,7 @@ const getAciPaymentStatus = async (transactionID,entityID) => {
     const response = await sendRequest(apiURL, options);
     return JSON.parse(response);
   } catch (error) {
-    console.error('Error retrieving ACI payment status:', error);
+    logger.error('Error retrieving ACI payment status:', error.message);
     throw error;
   }
 };
