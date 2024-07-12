@@ -5,7 +5,7 @@ const createTokenSchema = Joi.object({
   expMonth: Joi.number().positive().required(),
   expYear: Joi.number().positive().required(),
   cvc: Joi.string().length(3).required(),
-  cardholderName: Joi.string().required()
+  cardholderName: Joi.string()
 });
 
 const shift4PaymentSchema = Joi.object({
@@ -14,7 +14,7 @@ const shift4PaymentSchema = Joi.object({
   description: Joi.string().optional(),
   card: Joi.object({
     number: Joi.string().creditCard().required(),
-    holder: Joi.string().required(),
+    holder: Joi.string().optional(),
     expiryMonth: Joi.number().positive().required(),
     expiryYear: Joi.number().positive().required(),
     cvv: Joi.string().length(3).required()

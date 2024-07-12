@@ -3,8 +3,8 @@ const Joi = require('joi');
 const aciPaymentSchema = Joi.object({
   amount: Joi.number().required(),
   currency: Joi.string().required(),
-  paymentBrand: Joi.string().required(),
-  paymentType: Joi.string().required(),
+  paymentBrand: Joi.string(),
+  paymentType: Joi.string(),
   card: Joi.object({
     number: Joi.string().required(),
     expiryMonth: Joi.string().required(),
