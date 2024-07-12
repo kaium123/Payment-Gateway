@@ -25,3 +25,9 @@ npm install node-pg-migrate
 install sequelize
 npm install sequelize pg
 
+install logger package
+npm install pino
+
+npm install dateformat
+
+npm install winston-daily-rotate-file

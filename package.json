@@ -10,14 +10,16 @@
   "scripts": {
     "start": "node src/server.js",
     "migrate": "sequelize-cli db:migrate"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "app-root-path": "^3.1.0",
     "body-parser": "^1.20.2",
+    "cli-highlight": "^2.1.11",
     "commander": "^12.1.0",
+    "dateformat": "^5.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "joi": "^17.13.3",
@@ -25,6 +27,13 @@
     "node-pg-migrate": "^7.5.2",
     "node-sql-migrations": "^1.0.7",
     "pg": "^8.12.0",
-    "sequelize": "^6.37.3"
+    "pino": "^9.2.0",
+    "sequelize": "^6.37.3",
+    "stack-trace": "^1.0.0-pre2",
+    "winston": "^3.13.1",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-mongodb": "^5.1.1",
+    "winston-postgres": "^0.0.4",
+    "winston-transport": "^4.7.1"
   }
 }
