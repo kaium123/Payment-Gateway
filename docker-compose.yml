@@ -23,14 +23,21 @@ services:
     depends_on:
       - db
       - redis
+      - redis
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      # No need to mount node_modules if it's managed by Docker
+      # - /usr/src/app/node_modules
     restart: unless-stopped
+    networks:
+      - app-network
 
   db:
     image: postgres:14.1-alpine
     environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=payment_gateway
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=payment_gateway
@@ -39,6 +46,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  redis_data:
 
   redis:
     image: redis:latest
