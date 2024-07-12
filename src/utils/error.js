@@ -1,28 +1,21 @@
-class AppError extends Error {
-    constructor(message, statusCode) {
-      super(message);
-      this.statusCode = statusCode;
-      this.isOperational = true; // Operational errors are handled gracefully
-      Error.captureStackTrace(this, this.constructor);
-    }
+function AppError(message, statusCode) {
+    const error = new Error(message);
+    error.statusCode = statusCode;
+    error.isOperational = true;
+    Error.captureStackTrace(error, AppError);
+    return error;
   }
   
-  class NotFoundError extends AppError {
-    constructor(message = 'Resource not found') {
-      super(message, 404);
-    }
+  function NotFoundError(message = 'Resource not found') {
+    return AppError(message, 404);
   }
   
-  class ValidationError extends AppError {
-    constructor(message = 'Invalid input') {
-      super(message, 400);
-    }
+  function ValidationError(message = 'Invalid input') {
+    return AppError(message, 400);
   }
   
-  class UnauthorizedError extends AppError {
-    constructor(message = 'Unauthorized') {
-      super(message, 401);
-    }
+  function UnauthorizedError(message = 'Unauthorized') {
+    return AppError(message, 401);
   }
   
   module.exports = {
