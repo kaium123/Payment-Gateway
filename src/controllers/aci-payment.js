@@ -1,36 +1,53 @@
 const { createPayment, getAciPaymentStatus } = require('../services/aci-payment');
+const { ValidationError, NotFoundError, AppError } = require('../utils/error');
+const logger = require('../utils/logger');
 
 const createPaymentHandler = async (req, res) => {
   try {
     const response = await createPayment(req);
-    res.send(response);
+    res.status(200).json(response);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send(error.message);
+    logger.error('Error in createPaymentHandler:', { message: error.message, stack: error.stack });
+
+    if (error instanceof ValidationError) {
+      res.status(400).json({ error: error.message });
+    } else if (error instanceof UnauthorizedError) {
+      res.status(401).json({ error: error.message });
+    } else if (error instanceof NotFoundError) {
+      res.status(404).json({ error: error.message });
+    } else if (error instanceof AppError) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 };
 
 const getPaymentStatusHandler = async (req, res) => {
   try {
-    // Fetch transactionID from URL parameters
-    const transactionID = req.params.paymentID; 
-    console.log("transactionID: ", transactionID);
-
-    // Fetch entityID from query parameters
-    const entityID = req.query.entityId;  // Note the change here
-    console.log("entityID: ", entityID);
+    const transactionID = req.params.paymentID;
+    const entityID = req.query.entityId;
 
     if (!transactionID) {
-      return res.status(400).send('Transaction ID is required');
+      return res.status(400).json({ error: 'Transaction ID is required' });
     }
 
-
-
-    const response = await getAciPaymentStatus(transactionID,entityID);
-    res.send(response);
+    const response = await getAciPaymentStatus(transactionID, entityID);
+    res.status(200).json(response);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send(error.message);
+    logger.error('Error in getPaymentStatusHandler:', { message: error.message, stack: error.stack });
+
+    if (error instanceof ValidationError) {
+      res.status(400).json({ error: error.message });
+    } else if (error instanceof UnauthorizedError) {
+      res.status(401).json({ error: error.message });
+    } else if (error instanceof NotFoundError) {
+      res.status(404).json({ error: error.message });
+    } else if (error instanceof AppError) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 };
 

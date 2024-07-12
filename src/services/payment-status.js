@@ -22,7 +22,7 @@ const getPaymentStatus = async (transactionID) => {
       logger.info("Fetching Shift4 status...");
       const shift4Status = await getShift4PaymentStatus(transactionID);
       logger.info("Shift4 Status:", { shift4Status });
-      return { ...record.toJSON(), shift4Status: JSON.parse(shift4Status) };
+      return { ...record.toJSON(), shift4Status };
 
     }
     return record;
