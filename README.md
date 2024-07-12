@@ -20,9 +20,13 @@ Usage Instructions
 
     Install Dependencies
         npm install
-    
-    Start Docker Containers
-        docker compose up
+
+    Start project 
+        Start the Node.js project:(add database configuration correctly in env)
+            npm start
+        or
+        Start Docker Containers: ((add database configuration correctly in env))
+            docker compose up
 
         Now we can process and check status of payments using REST API
 
