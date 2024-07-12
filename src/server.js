@@ -1,10 +1,8 @@
 const { connectDB } = require('./database/postgres');
 const { runMigrations } = require('./sql/run-migrations'); 
-const config = require('./config/config');
-
 
 const app = require('./app/app');
-const port = config.port;
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   try {
