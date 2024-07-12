@@ -1,11 +1,11 @@
 const querystring = require('querystring');
 const { createTokenSchema, shift4PaymentSchema } = require('../models/shift4-payment'); // Adjust path if necessary
-const sendRequest = require('../utils/request');
-const config = require('../config/config');
+const sendRequest = require('../utils/https/request');
+const config = require('../infra/config/config');
 const { PaymentRecord } = require('../models/payment-records');
-const { validatePaymentRecord } = require('../utils/validation');
-const logger = require('../utils/logger'); // Assuming logger is properly set up
-const { ValidationError, NotFoundError, UnauthorizedError, AppError } = require('../utils/error');
+const { validatePaymentRecord } = require('../utils/validation/validation');
+const logger = require('../utils/logger/logger'); // Assuming logger is properly set up
+const { ValidationError, NotFoundError, UnauthorizedError, AppError } = require('../utils/error/error');
 
 const createToken = async (tokenReq, authHeader) => {
   const authToken = `Basic ${Buffer.from(config.apiKeys.shift4TokenCreateKey + ':').toString('base64')}`;
@@ -50,8 +50,6 @@ const createPayment = async (req) => {
       throw ValidationError(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
     }
 
-    console.log(config.apiKeys.shift4ApiKey)
-
     const authToken = `Basic ${Buffer.from(config.apiKeys.shift4ApiKey + ':').toString('base64')}`;
 
     // Now paymentData is of type shift4PaymentSchema and contains the validated data
@@ -66,8 +64,6 @@ const createPayment = async (req) => {
 
     const tokenResponse = await createToken(tokenReq, authToken);
     const tokenResponseBody = JSON.parse(tokenResponse);
-
-    console.log(tokenResponseBody);
 
     if (!tokenResponseBody.id) {
       throw AppError('Token creation failed: no token id returned', 500);
@@ -86,8 +82,6 @@ const createPayment = async (req) => {
       description: description
     });
 
-    console.log(postData);
-
     const options = {
       method: 'POST',
       headers: {
@@ -98,16 +92,10 @@ const createPayment = async (req) => {
     };
 
     const apiURL = `${config.api.shift4BaseURL}/charges`;
-    console.log(apiURL);
-    console.log(authToken);
-
     const responseString = await sendRequest(apiURL, options, postData);
 
     // Parse the response string into an object
     const response = JSON.parse(responseString);
-
-    // Print the response
-    console.log("API Response:", response);
 
     // Extract id from response and save it in payment_records table
     if (response && response.id) {
@@ -130,12 +118,15 @@ const createPayment = async (req) => {
         const savedRecord = await PaymentRecord.create(record);
         // Log the saved record to confirm it was saved
         console.log("Saved Payment Record:", savedRecord);
+
       } catch (err) {
         logger.error('Error saving payment record:', err.message);
         throw AppError('Failed to save payment record', 500);
+
       }
     } else {
       console.error("API response does not contain 'id' field:", response);
+
     }
 
     return {
@@ -148,11 +139,11 @@ const createPayment = async (req) => {
       created: response.timestamp
     };
 
-    return response;
   } catch (error) {
     logger.error('Error creating payment:', error.message);
     if (error.isAppError) throw error;
     throw AppError('Failed to create payment', 500);
+
   }
 };
 
@@ -173,10 +164,12 @@ const getShift4PaymentStatus = async (chargeID) => {
 
     const response = await sendRequest(apiURL, options);
     return JSON.parse(response);
+
   } catch (error) {
     logger.error('Error retrieving Shift4 payment status:', error.message);
     if (error.isAppError) throw error;
     throw AppError('Failed to retrieve payment status', 500);
+
   }
 };
 

@@ -1,12 +1,12 @@
 const { aciPaymentSchema } = require('../models/aci-payment');
 const { PaymentRecord } = require('../models/payment-records');
-const { validatePaymentRecord } = require('../utils/validation');
+const { validatePaymentRecord } = require('../utils/validation/validation');
 const { SavePaymentRecord } = require('../repository/payment-records');
-const sendRequest = require('../utils/request');
-const config = require('../config/config');
+const sendRequest = require('../utils/https/request');
+const config = require('../infra/config/config');
 const querystring = require('querystring');
-const logger = require('../utils/logger');
-const { ValidationError, UnauthorizedError, AppError } = require('../utils/error');
+const logger = require('../utils/logger/logger');
+const { ValidationError, UnauthorizedError, AppError } = require('../utils/error/error');
 
 const createPayment = async (req) => {
   const entityId = config.apiKeys.aciEntityID
@@ -30,8 +30,6 @@ const createPayment = async (req) => {
     }
   } = value;
 
-
-
   const postData = querystring.stringify({
     entityId,
     amount,
@@ -44,7 +42,6 @@ const createPayment = async (req) => {
     'card.cvv': cvv
   });
 
-
   const options = {
     method: 'POST',
     headers: {
@@ -53,7 +50,6 @@ const createPayment = async (req) => {
       'Content-Length': Buffer.byteLength(postData)
     }
   };
-
 
   try {
     const apiURL = `${config.api.aciBaseURL}/payments`;
@@ -70,9 +66,11 @@ const createPayment = async (req) => {
       };
 
       const savedRecord = await SavePaymentRecord(record);
+
     } else {
       logger.error("API response does not contain 'id' field:", response);
       throw new AppError("API response does not contain 'id' field");
+
     }
 
     return {
@@ -84,17 +82,17 @@ const createPayment = async (req) => {
       },
       created: response.timestamp
     };
-    return response;
+
   } catch (error) {
     logger.error('Error creating payment:', error.message);
     throw error;
+
   }
 };
 
 const getAciPaymentStatus = async (transactionID, entityID) => {
   const apiURL = `${config.api.aciBaseURL}/payments/${transactionID}?entityId=${entityID}`;
   const authToken = config.apiKeys.aciBrearerToken; 
-  console.log(authToken)
   const options = {
     method: 'GET',
     headers: {
@@ -106,9 +104,11 @@ const getAciPaymentStatus = async (transactionID, entityID) => {
   try {
     const response = await sendRequest(apiURL, options);
     return JSON.parse(response);
+
   } catch (error) {
     logger.error('Error retrieving ACI payment status:', error.message);
     throw error;
+
   }
 };
 

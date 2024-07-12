@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-
 const { program } = require('commander');
 const { getPaymentStatus } = require('../src/services/payment-status');
-const logger = require('../src/utils/logger');
+const logger = require('../src/utils/logger/logger');
 
 
 program
@@ -13,7 +12,7 @@ program
 
     try {
       const result = await getPaymentStatus(payment_id );
-      console.log('Payment status:', result);
+      console.log("Payment status: ",result)
       
     } catch (error) {
       logger.error('Error retrieving payment record:', error.message);

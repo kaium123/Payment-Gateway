@@ -1,7 +1,7 @@
 const { PaymentRecord } = require('../models/payment-records');
-const { validatePaymentRecord } = require('../utils/validation');
-const logger = require('../utils/logger');
-const { ValidationError, NotFoundError } = require('../utils/error');
+const { validatePaymentRecord } = require('../utils/validation/validation');
+const logger = require('../utils/logger/logger');
+const { ValidationError, NotFoundError } = require('../utils/error/error');
 
 const SavePaymentRecord = async (record) => {
   const validation = validatePaymentRecord(record);
@@ -33,6 +33,7 @@ const getPaymentRecord = async (transactionID) => {
     const record = await PaymentRecord.findOne({ where: { transactionID } });
     if (!record) {
       throw new NotFoundError(`Payment record with ID ${transactionID} not found`);
+      
     }
     return record;
 

@@ -1,4 +1,4 @@
-const { ValidationError } = require('../utils/error');
+const { ValidationError } = require('../error/error');
 
 function validatePaymentRecord(record) {
   if (!record || typeof record !== 'object') {

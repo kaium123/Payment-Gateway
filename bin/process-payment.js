@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-
 const { program } = require('commander');
 const { createPayment, getPaymentStatus } = require('../src/services/aci-payment'); // Adjust the path if necessary
-const config = require('../src/config/config');
+const config = require('../src/infra/config/config');
+const logger = require('../src/utils/logger/logger');
+
 
 program
   .command('aci')
@@ -26,18 +27,18 @@ program
         number: card_number,
         holder: card_holder,
         expiryMonth: expiryMonth,
-        expiryYear: `20${expiryYear}`, // Adjusting the year format
+        expiryYear: `20${expiryYear}`,
         cvv: cvv
       }
     };
 
-    const token = `Bearer ${config.apiKeys.oppwa}`;
-
     try {
-      const result = await createPayment({ body: createPaymentRequest, headers: { authorization: token } });
+      const result = await createPayment({ body: createPaymentRequest, });
       console.log('Payment created:', result);
+
     } catch (error) {
-      console.error('Error creating payment:', error);
+      logger.error('Error creating payment:', error.message);
+
     }
   });
 
@@ -63,7 +64,7 @@ program
         number: card_number,
         holder: card_holder,
         expiryMonth: expiryMonth,
-        expiryYear: `20${expiryYear}`, // Adjusting the year format
+        expiryYear: `20${expiryYear}`,
         cvv: cvv
       }
     };
@@ -71,10 +72,10 @@ program
     const token = `Bearer ${config.apiKeys.oppwa}`;
 
     try {
-      const result = await createPayment({ body: createPaymentRequest, headers: { authorization: token } });
+      const result = await createPayment({ body: createPaymentRequest });
       console.log('Payment created:', result);
     } catch (error) {
-      console.error('Error creating payment:', error);
+      logger.error('Error creating payment:', error.message);
     }
   });
 

@@ -33,7 +33,7 @@ const logger = winston.createLogger({
     new winston.transports.File(options.file),
     new winston.transports.Console(options.console)
   ],
-  exitOnError: false // do not exit on handled exceptions
+  exitOnError: false
 });
 
 function traceCaller(n) {

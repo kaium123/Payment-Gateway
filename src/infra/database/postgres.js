@@ -11,8 +11,5 @@ const connectDB = async () => {
   return client;
 };
 
-
-
-
 module.exports = { connectDB };
 
