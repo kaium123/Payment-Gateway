@@ -1,7 +1,7 @@
 function AppError(message, statusCode) {
     const error = new Error(message);
     error.statusCode = statusCode;
-    error.isOperational = true;
+    error.isAppError = true; 
     Error.captureStackTrace(error, AppError);
     return error;
   }

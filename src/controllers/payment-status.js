@@ -1,4 +1,4 @@
-const { getPaymentStatus } = require('../services/payment-status'); // Ensure this path is correct
+const { getPaymentStatus } = require('../services/payment-status');
 
 const getPaymentRecordHandler = async (req, res) => {
   const { id } = req.params;
@@ -6,8 +6,10 @@ const getPaymentRecordHandler = async (req, res) => {
   try {
     const record = await getPaymentStatus(id);
     res.status(200).json(record);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
+
   }
 };
 

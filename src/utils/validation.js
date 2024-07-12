@@ -1,4 +1,3 @@
-// src/validators/validatePaymentRecord.js
 const { ValidationError } = require('../utils/error');
 
 function validatePaymentRecord(record) {
@@ -6,7 +5,6 @@ function validatePaymentRecord(record) {
     throw ValidationError('Invalid record');
   }
 
-  // Perform more detailed validation as needed
   if (!record.transactionID) {
     throw ValidationError('transactionID is required');
   }

@@ -15,6 +15,7 @@ sudo npm install -g .
 npm set prefix ~/.npm
 export PATH="$HOME/.npm/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
+npm link
 
 
 sql migration
