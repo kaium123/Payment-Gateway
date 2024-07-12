@@ -51,6 +51,8 @@ const createPayment = async (req) => {
       throw ValidationError(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
     }
 
+    const authToken = `Basic ${Buffer.from(config.apiKeys.shift4ApiKey + ':').toString('base64')}`;
+
     // Now paymentData is of type shift4PaymentSchema and contains the validated data
     const { number, holder, expiryMonth, expiryYear, cvv } = paymentData.card;
     const tokenReq = {
@@ -61,7 +63,7 @@ const createPayment = async (req) => {
       cardholderName: holder
     };
 
-    const tokenResponse = await createToken(tokenReq, req.headers['authorization']);
+    const tokenResponse = await createToken(tokenReq, authToken);
     const tokenResponseBody = JSON.parse(tokenResponse);
 
     console.log(tokenResponseBody);
@@ -88,7 +90,7 @@ const createPayment = async (req) => {
     const options = {
       method: 'POST',
       headers: {
-        'Authorization': req.headers['authorization'],
+        'Authorization': authToken,
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(postData)
       }

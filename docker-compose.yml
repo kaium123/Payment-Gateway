@@ -16,11 +16,13 @@ services:
       - PG_DB=payment_gateway
       - PG_USER=root
       - PG_PASSWORD=123456
-      - PG_HOST=localhost
+      - PG_HOST=db
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - POSTGRES_URI=postgresql://root:123456@db:5432/payment_gateway
     depends_on:
       - db
+      - redis
       - redis
     volumes:
       - .:/usr/src/app
@@ -36,6 +38,9 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=payment_gateway
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=payment_gateway
     ports:
       - "5432:5432"
     volumes:
@@ -44,6 +49,10 @@ services:
     networks:
       - app-network
 
+volumes:
+  postgres_data:
+  redis_data:
+
   redis:
     image: redis:latest
     ports:
@@ -51,13 +60,7 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
   redis_data:
-
-networks:
-  app-network:
-    driver: bridge

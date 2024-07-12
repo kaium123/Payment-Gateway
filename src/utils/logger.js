@@ -1,16 +1,15 @@
 const winston = require('winston');
 const path = require('path');
-const appRoot = require('app-root-path');
 
-const PROJECT_ROOT = path.join(__dirname, '..');
+const LOG_FILE_PATH = '/var/log/my-app.log';
 
 const options = {
   file: {
     level: 'info',
-    filename: `${appRoot}/logs/app.log`,
+    filename: LOG_FILE_PATH,
     handleExceptions: true,
     json: true,
-    maxsize: 5242880, // 5MB
+    maxsize: 5242880,
     maxFiles: 5,
     colorize: false,
     timestamp: true
@@ -18,7 +17,7 @@ const options = {
   console: {
     level: 'debug',
     handleExceptions: true,
-    json: false, // Use 'false' for console logs
+    json: false,
     colorize: true,
     timestamp: true
   }
@@ -37,40 +36,52 @@ const logger = winston.createLogger({
   exitOnError: false // do not exit on handled exceptions
 });
 
-// Function to get the caller file and line number
 function traceCaller(n) {
   if (isNaN(n) || n < 0) n = 1;
-  n += 1;
   const stack = (new Error()).stack;
-  let stackLines = stack.split('\n');
-  
+  const stackLines = stack.split('\n');
+
   // Skip the first line which is the current location
-  let stackLine = stackLines[n];
-  
-  if (stackLine) {
-    // Extract file path and line number from the stack line
-    let match = stackLine.match(/\(([^)]+)\)/);
-    if (match) {
-      return match[1]; // Returns the file path and line number
-    }
+  const stackLine = stackLines[n + 1] || ''; 
+
+  // Extract file path and line number from the stack line
+  const match = stackLine.match(/\(([^)]+)\)/);
+  if (match) {
+    return match[1]; 
   }
-  
+
   return 'Unknown location';
 }
+
 
 // Wrap logger methods to include file and line number
 ['info', 'error'].forEach((level) => {
   const originalMethod = logger[level];
+  
   logger[level] = function (msg, meta) {
-    const fileAndLine = traceCaller(1);
-    const message = meta instanceof Error
-      ? `${fileAndLine}: ${msg} | Error: ${meta.message} | Stack: ${meta.stack}`
-      : meta && typeof meta === 'object'
-        ? `${fileAndLine}: ${msg} | Meta: ${JSON.stringify(meta)}`
-        : `${fileAndLine}: ${msg}`;
-    return originalMethod.call(this, message);
+    const fileAndLine = traceCaller(2); // Get the file and line number
+    let formattedMessage;
+
+    // Check if meta is an instance of Error
+    if (meta instanceof Error) {
+      formattedMessage = `file : ${fileAndLine}, msg : ${msg} | Error: ${meta.message} | Stack: ${meta.stack}`;
+    } 
+    // Check if meta is an object (not an instance of Error)
+    else if (meta && typeof meta === 'object') {
+      formattedMessage = `file : ${fileAndLine}, msg : ${msg} | Meta: ${JSON.stringify(meta)}`;
+
+    } 
+    // Default case: meta is neither an Error nor an object
+    else {
+      formattedMessage = `file : ${fileAndLine}, msg : ${msg}`;
+
+    }
+
+    // Call the original logging method with the formatted message
+    return originalMethod.call(this, formattedMessage);
   };
 });
+
 
 logger.stream = {
   write: function (message) {

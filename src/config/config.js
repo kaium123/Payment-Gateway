@@ -6,7 +6,9 @@ module.exports = {
   port: process.env.PORT,
   apiKeys: {
     aciBrearerToken: process.env.ACI_BEARER_TOKEN,
-    shift4ApiKey: process.env.SHIFT4_API_KEY
+    shift4ApiKey: process.env.SHIFT4_API_KEY,
+    aciEntityID: process.env.ACI_ENTITY_ID
+
   },
   api: {
     aciBaseURL: process.env.ACI_BASE_URL,

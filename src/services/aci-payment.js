@@ -9,6 +9,7 @@ const logger = require('../utils/logger');
 const { ValidationError, UnauthorizedError, AppError } = require('../utils/error');
 
 const createPayment = async (req) => {
+  const entityId = config.apiKeys.aciEntityID
   const { error, value } = aciPaymentSchema.validate(req.body);
 
   if (error) {
@@ -16,7 +17,6 @@ const createPayment = async (req) => {
   }
 
   const {
-    entityId,
     amount,
     currency,
     paymentBrand,
@@ -30,11 +30,7 @@ const createPayment = async (req) => {
     }
   } = value;
 
-  const token = req.headers['authorization'];
 
-  if (!token) {
-    throw new UnauthorizedError('Authorization token is required');
-  }
 
   const postData = querystring.stringify({
     entityId,
@@ -49,17 +45,15 @@ const createPayment = async (req) => {
     'card.cvv': cvv
   });
 
-  
 
   const options = {
     method: 'POST',
     headers: {
-      'Authorization': token,
+      'Authorization': `Bearer ${config.apiKeys.aciBrearerToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': Buffer.byteLength(postData)
     }
   };
-  console.log(token)
 
 
   try {
