@@ -7,8 +7,8 @@ const aciPaymentSchema = Joi.object({
   paymentType: Joi.string().required(),
   card: Joi.object({
     number: Joi.string().required(),
-    holder: Joi.string().required(),
     expiryMonth: Joi.string().required(),
+    holder: Joi.string(),
     expiryYear: Joi.string().required(),
     cvv: Joi.string().required()
   }).required()

@@ -10,6 +10,7 @@ const { ValidationError, UnauthorizedError, AppError } = require('../utils/error
 
 const createPayment = async (req) => {
   const entityId = config.apiKeys.aciEntityID
+  const cardHolder = req.body
   const { error, value } = aciPaymentSchema.validate(req.body);
 
   if (error) {
@@ -23,7 +24,6 @@ const createPayment = async (req) => {
     paymentType,
     card: {
       number: cardNumber,
-      holder: cardHolder,
       expiryMonth,
       expiryYear,
       cvv
@@ -39,7 +39,6 @@ const createPayment = async (req) => {
     paymentBrand,
     paymentType,
     'card.number': cardNumber,
-    'card.holder': cardHolder,
     'card.expiryMonth': expiryMonth,
     'card.expiryYear': expiryYear,
     'card.cvv': cvv
@@ -76,6 +75,15 @@ const createPayment = async (req) => {
       throw new AppError("API response does not contain 'id' field");
     }
 
+    return {
+      transactionID: response.id,
+      amount: amount,
+      currency: currency,
+      card: {
+        bin:response.card.bin
+      },
+      created: response.timestamp
+    };
     return response;
   } catch (error) {
     logger.error('Error creating payment:', error.message);
