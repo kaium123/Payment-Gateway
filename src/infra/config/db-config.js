@@ -1,4 +1,3 @@
-// config/database-config.js
 
 require('dotenv').config(); // Load environment variables from .env file
 

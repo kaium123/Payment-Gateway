@@ -1,10 +1,10 @@
 const querystring = require('querystring');
-const { createTokenSchema, shift4PaymentSchema } = require('../models/shift4-payment'); // Adjust path if necessary
+const { createTokenSchema, shift4PaymentSchema } = require('../models/shift4-payment'); 
 const sendRequest = require('../utils/https/request');
 const config = require('../infra/config/config');
 const { PaymentRecord } = require('../models/payment-records');
 const { validatePaymentRecord } = require('../utils/validation/validation');
-const logger = require('../utils/logger/logger'); // Assuming logger is properly set up
+const logger = require('../utils/logger/logger');
 const { ValidationError, NotFoundError, UnauthorizedError, AppError } = require('../utils/error/error');
 
 const createToken = async (tokenReq, authHeader) => {

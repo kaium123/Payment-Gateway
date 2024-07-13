@@ -6,15 +6,13 @@ const paymentStatus = require('../routes/payment-status/payment-status');
 const routes = require('../routes/routes')
 const { errorHandler } = require('../middleware/error-handler');
 
-// es6 import from , use full path
-
 // Initialize Express app
 const app = express();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Load middleware
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.use(bodyParser.json());
 app.use(cors());

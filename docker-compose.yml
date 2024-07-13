@@ -26,8 +26,6 @@ services:
       - redis
     volumes:
       - .:/usr/src/app
-      # No need to mount node_modules if it's managed by Docker
-      # - /usr/src/app/node_modules
     restart: unless-stopped
     networks:
       - app-network

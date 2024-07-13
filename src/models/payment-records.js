@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../infra/database/sequelize'); // Ensure this path is correct
+const sequelize = require('../infra/database/sequelize');
 const Joi = require('joi');
 
 // Define the PaymentRecord model

@@ -59,7 +59,7 @@ function traceCaller(n) {
   const originalMethod = logger[level];
   
   logger[level] = function (msg, meta) {
-    const fileAndLine = traceCaller(2); // Get the file and line number
+    const fileAndLine = traceCaller(2); 
     let formattedMessage;
 
     // Check if meta is an instance of Error

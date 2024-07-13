@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-const { createPayment, getPaymentStatus } = require('../src/services/aci-payment'); // Adjust the path if necessary
+const { createPayment, getPaymentStatus } = require('../src/services/aci-payment');
 const config = require('../src/infra/config/config');
 const logger = require('../src/utils/logger/logger');
 

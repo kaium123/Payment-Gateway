@@ -61,7 +61,7 @@ const getMigrationVersion = async (client) => {
 
     } else {
       logger.info('No migration version found');
-      return 0; // Return a default value if no version is found
+      return 0;
 
     }
   } catch (err) {
